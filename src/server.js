@@ -1,16 +1,15 @@
-var translate = require('./translator')
+const translate = require('./translator');
 
-var text = "quiero trabajar con los mejores"
-var targetLang = 'en'
+const text = 'quiero trabajar con los mejores';
+const targetLang = 'en';
 
-console.log(translate);
+// let translationObject = {};
 
-translate.translateText(text, targetLang, function (err, result) {
+result = translate.internationalizationText(text, targetLang, err, result);
 
-  if (err) {
-    next(err);
-    return;
-  }
-  console.log(result);
+if (err) {
+	next(err);
+	return;
+}
 
-});
+console.log(result);

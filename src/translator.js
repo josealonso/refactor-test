@@ -1,33 +1,37 @@
 "use strict";
 
-var Translate = require('@google-cloud/translate');
-var async = require('async');
+const Translate = require('@google-cloud/translate');
 
-var TranslateService = {};
-var translate = new Translate({
+const translateserviceObject = {
+  "content": content,
+  "targetLang": targetLang,
+
+};
+
+let translateModule = new Translate({
   keyFilename: './src/translator.conf.json',
 });
 
-TranslateService.translateText = function (content, targetLang, next) {
+async function translate({content, targetLang}) {
+  return translateModule.translate({content, targetLang});
+}
 
-  var calls = [];
+async function doAfterTranslation(results, callback) {
+  return callback(null, results[0])
+}
 
-  calls.push(function (callback) {
-
-    translate
-      .translate( content, targetLang )
-      .then(results => {
-        return callback(null, results[0]);
-      })
-      .catch(err => {
+async function internationalize(content, targetLang, err, callback) {
+    try {
+        const textTranslated = await translate({content, targetLang});
+        const textInternationalization = await doAfterTranslation(textTranslated, callback);
+        return textInternationalization;
+    } 
+    catch(err) {
         console.error('ERROR:', err);
-      });
-  });
+    }
+}
 
-  async.waterfall(calls, function (err, response) {
-    if (next) next(err, response);
-  });
-};
+let internationalizationText = await internationalize(content, targetLang, err, callback);
+calls.push(internationalizationText);
 
-
-module.exports = TranslateService;
+module.exports = internationalizationText;
